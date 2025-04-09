@@ -13,7 +13,7 @@ A Retrieval-Augmented Generation (RAG) system that allows you to query PDF docum
 ## Prerequisites
 
 - [Bun](https://bun.sh/) runtime environment
-- OpenRouter API key // or other open compatible provider
+- OpenRouter API key (or other OpenAI-compatible provider)
 
 ## Setup
 
@@ -23,12 +23,12 @@ A Retrieval-Augmented Generation (RAG) system that allows you to query PDF docum
 bun install
 ```
 
-2. Set up your OpenRouter API key:
+2. Set up your OpenAI/OpenRouter API key:
    - Copy the `.env.example` file to `.env`:
    ```bash
    cp .env.example .env
    ```
-   - Edit `.env` and replace `your-api-key-here` with your actual OpenRouter API key
+   - Edit `.env` and replace `your-api-key-here` with your actual OpenAI/OpenRouter API key
 
 ## Project Structure
 
@@ -40,25 +40,51 @@ bun install
 
 ## Usage
 
-1. Run the application with a PDF file:
+The application supports two main commands:
+
+### 1. Ingesting a PDF
+
+To embed a PDF document into the vector database:
 
 ```bash
-bun main.ts <pdf_file>
+bun main.ts ingest <pdf_file>
 ```
 
 Example:
 
 ```bash
-bun main.ts AyaMohsenResume.pdf
+bun main.ts ingest AyaMohsenResume.pdf
 ```
 
-2. Once the PDF is processed, you can ask questions about its content. The system will:
-   - Generate embeddings for your question
-   - Find relevant context from the PDF
-   - Use the DeepSeek Chat model to generate accurate answers
+This will:
+
+- Extract text from the PDF
+- Split the text into manageable chunks
+- Generate embeddings for each chunk
+- Store the chunks and embeddings in the vector database
+
+### 2. Querying the Embedded Document
+
+To ask questions about the ingested document:
+
+```bash
+bun main.ts query "<your question>"
+```
+
+Example:
+
+```bash
+bun main.ts query "Explain who this person is and can they be good for game development?"
+```
+
+The system will:
+
+- Generate an embedding for your question
+- Find relevant context from the PDF using similarity search
+- Use the DeepSeek Chat model to generate an accurate answer based on the retrieved context
 
 ## Dependencies
 
 - `@xenova/transformers`: For generating embeddings
-- `openai`: For interacting with the OpenRouter API
+- `openai`: For interacting with the OpenAI/OpenRouter API
 - `pdf-parse`: For extracting text from PDF documents
